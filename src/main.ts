@@ -1,0 +1,50 @@
+import { NestFactory, Reflector } from '@nestjs/core';
+import { ValidationPipe, ClassSerializerInterceptor } from '@nestjs/common';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { AppModule } from './app.module';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  // ── Prefijo global de la API ──────────────────────────────────
+  app.setGlobalPrefix('api/v1');
+
+  // ── Validación global con class-validator ─────────────────────
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,              // elimina propiedades no declaradas en el DTO
+      forbidNonWhitelisted: true,   // lanza error si llegan propiedades extra
+      transform: true,              // convierte tipos automáticamente (string → number)
+    }),
+  );
+
+  // ── Serialización: excluye @Exclude() de las entidades ────────
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+
+  // ── Swagger ───────────────────────────────────────────────────
+  const config = new DocumentBuilder()
+    .setTitle('StockMaster API')
+    .setDescription('Sistema de Gestión de Inventarios — Caso Práctico 3')
+    .setVersion('1.0')
+    .addBearerAuth(
+      { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+      'access-token',
+    )
+    .addTag('Auth',       'Registro, login y perfil')
+    .addTag('Products',   'Gestión de productos')
+    .addTag('Categories', 'Gestión de categorías')
+    .addTag('Movements',  'Entradas y salidas de inventario')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/docs', app, document, {
+    swaggerOptions: { persistAuthorization: true },
+  });
+
+  const port = process.env.PORT ?? 3000;
+  await app.listen(port);
+
+  console.log(`\n🚀 StockMaster corriendo en: http://localhost:${port}/api/v1`);
+  console.log(`📚 Swagger docs en:          http://localhost:${port}/api/docs\n`);
+}
+bootstrap();
