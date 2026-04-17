@@ -2,12 +2,21 @@ import { NestFactory, Reflector } from '@nestjs/core';
 import { ValidationPipe, ClassSerializerInterceptor } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { ThrottlerExceptionFilter } from './common/filters/throttler.filter';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // ── Prefijo global de la API ──────────────────────────────────
   app.setGlobalPrefix('api/v1');
+
+  // ── Filtros globales para excepciones ─────────────────────────
+  // Orden: específicos primero (ThrottlerExceptionFilter), genéricos después
+  app.useGlobalFilters(
+    new ThrottlerExceptionFilter(),
+    new HttpExceptionFilter(),
+  );
 
   // ── Validación global con class-validator ─────────────────────
   app.useGlobalPipes(

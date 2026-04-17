@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
+import { UsersService } from '../../users/users.service';
 
 export interface JwtPayload {
   sub: number;        // id del usuario
@@ -11,7 +12,10 @@ export interface JwtPayload {
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(private configService: ConfigService) {
+  constructor(
+    private configService: ConfigService,
+    private usersService: UsersService,
+  ) {
     super({
       // Extrae el token del header: Authorization: Bearer <token>
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -22,12 +26,23 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   /**
    * Este método se llama automáticamente si el token es válido.
+   * Valida que el usuario existe y esté activo en la BD.
    * Lo que retorne aquí queda en request.user
    */
   async validate(payload: JwtPayload) {
     if (!payload.sub) {
       throw new UnauthorizedException('Token inválido');
     }
-    return { id: payload.sub, email: payload.email, rol: payload.rol };
+
+    // Validar que el usuario existe y está activo en BD
+    const user = await this.usersService.validateUserIsActive(payload.sub);
+
+    // Retornar datos del usuario que se adjuntan a request.user
+    return {
+      id: user.id,
+      email: user.email,
+      rol: user.rol,
+      isActive: user.isActive,
+    };
   }
 }
