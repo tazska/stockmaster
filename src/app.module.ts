@@ -5,6 +5,7 @@ import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 
 import { AuthModule } from './auth/auth.module';
+import { CategoriaModule } from './categoria/categoria.module';
 
 @Module({
   imports: [
@@ -38,14 +39,14 @@ import { AuthModule } from './auth/auth.module';
         database: config.get<string>('DB_DATABASE'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: config.get('NODE_ENV') !== 'production', // ⚠️ solo desarrollo
-        logging: config.get('NODE_ENV') === 'development',
+        logging: config.get('NODE_ENV') === 'production',
       }),
     }),
 
     // ── Módulos de la aplicación ─────────────────────────────────
     AuthModule,
+    CategoriaModule
     // ProductsModule,    ← se agrega en la siguiente fase
-    // CategoriesModule,
     // MovementsModule,
   ],
   providers: [
