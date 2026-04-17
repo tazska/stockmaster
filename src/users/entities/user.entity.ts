@@ -24,7 +24,11 @@ export class User {
   rol: Role;
 
   @Column({ default: true })
-  activo: boolean;
+  isActive: boolean;
+
+  @Column({ type: 'varchar', length: 500, nullable: true })
+  @Exclude()                    // ← nunca se serializa en respuestas
+  refreshToken: string | null;
 
   @CreateDateColumn()
   creadoEn: Date;

@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 import { AuthModule } from './auth/auth.module';
 
@@ -10,6 +12,17 @@ import { AuthModule } from './auth/auth.module';
     ConfigModule.forRoot({
       isGlobal: true,       // disponible en todos los módulos sin reimportar
       envFilePath: '.env',
+    }),
+
+    // ── Rate Limiting (Throttler) ────────────────────────────────
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          name: 'default',
+          ttl: 60000,       // 60 segundos
+          limit: 100,       // 100 requests por minuto (límite global)
+        },
+      ],
     }),
 
     // ── Base de datos MySQL con TypeORM ──────────────────────────
@@ -34,6 +47,12 @@ import { AuthModule } from './auth/auth.module';
     // ProductsModule,    ← se agrega en la siguiente fase
     // CategoriesModule,
     // MovementsModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
   ],
 })
 export class AppModule {}

@@ -53,7 +53,7 @@ export class AuthService {
   async login(dto: LoginDto) {
     // Buscar usuario por email
     const usuario = await this.usersRepository.findOne({
-      where: { email: dto.email, activo: true },
+      where: { email: dto.email, isActive: true },
     });
 
     if (!usuario) {
@@ -66,15 +66,30 @@ export class AuthService {
       throw new UnauthorizedException('Credenciales incorrectas');
     }
 
-    // Generar JWT
+    // Generar access token (8 horas)
     const payload: JwtPayload = {
       sub: usuario.id,
       email: usuario.email,
       rol: usuario.rol,
     };
+    const access_token = this.jwtService.sign(payload);
+
+    // Generar refresh token (7 días)
+    const refreshPayload = {
+      sub: usuario.id,
+      email: usuario.email,
+      type: 'refresh',
+    };
+    const refresh_token = this.jwtService.sign(refreshPayload, {
+      expiresIn: 7 * 24 * 60 * 60, // 7 días
+    });
+
+    // Guardar refresh token en BD
+    await this.usersRepository.update(usuario.id, { refreshToken: refresh_token });
 
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token,
+      refresh_token,
       usuario: {
         id: usuario.id,
         email: usuario.email,
@@ -93,5 +108,55 @@ export class AuthService {
     if (!usuario) throw new UnauthorizedException();
     const { password, ...perfil } = usuario;
     return perfil;
+  }
+
+  // ─── Refresh Token ───────────────────────────────────────────────────────────
+
+  async refreshAccessToken(refreshToken: string) {
+    try {
+      // Validar que el token JWT sea válido
+      const decoded = this.jwtService.verify(refreshToken);
+
+      // Buscar usuario y validar que el refresh token coincida
+      const usuario = await this.usersRepository.findOne({
+        where: { id: decoded.sub },
+      });
+
+      if (!usuario || usuario.refreshToken !== refreshToken) {
+        throw new UnauthorizedException('Refresh token inválido o expirado');
+      }
+
+      // Generar nuevo access token
+      const payload: JwtPayload = {
+        sub: usuario.id,
+        email: usuario.email,
+        rol: usuario.rol,
+      };
+
+      const access_token = this.jwtService.sign(payload);
+
+      return {
+        access_token,
+        usuario: {
+          id: usuario.id,
+          email: usuario.email,
+          nombre: usuario.nombre,
+          rol: usuario.rol,
+        },
+      };
+    } catch (error) {
+      throw new UnauthorizedException('Refresh token inválido o expirado');
+    }
+  }
+
+  // ─── Logout ───────────────────────────────────────────────────────────────────
+
+  async logout(userId: number) {
+    // Limpiar el refresh token del usuario en la BD
+    await this.usersRepository.update(userId, { refreshToken: null });
+
+    return {
+      message: 'Sesión cerrada correctamente',
+    };
   }
 }
