@@ -21,9 +21,9 @@ async function bootstrap() {
   // ── Validación global con class-validator ─────────────────────
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true,              // elimina propiedades no declaradas en el DTO
-      forbidNonWhitelisted: true,   // lanza error si llegan propiedades extra
-      transform: true,              // convierte tipos automáticamente (string → number)
+      whitelist: true, // elimina propiedades no declaradas en el DTO
+      forbidNonWhitelisted: true, // lanza error si llegan propiedades extra
+      transform: true, // convierte tipos automáticamente (string → number)
     }),
   );
 
@@ -39,10 +39,10 @@ async function bootstrap() {
       { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
       'access-token',
     )
-    .addTag('Auth',       'Registro, login y perfil')
-    .addTag('Products',   'Gestión de productos')
+    .addTag('Auth', 'Registro, login y perfil')
+    .addTag('Products', 'Gestión de productos')
     .addTag('Categories', 'Gestión de categorías')
-    .addTag('Movements',  'Entradas y salidas de inventario')
+    .addTag('Movements', 'Entradas y salidas de inventario')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
@@ -54,6 +54,8 @@ async function bootstrap() {
   await app.listen(port);
 
   console.log(`\n🚀 StockMaster corriendo en: http://localhost:${port}/api/v1`);
-  console.log(`📚 Swagger docs en:          http://localhost:${port}/api/docs\n`);
+  console.log(
+    `📚 Swagger docs en:          http://localhost:${port}/api/docs\n`,
+  );
 }
-bootstrap();
+void bootstrap();

@@ -4,13 +4,16 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 
 export interface RefreshJwtPayload {
-  sub: number;        // id del usuario
+  sub: number; // id del usuario
   email: string;
-  type: 'refresh';    // Para diferenciar de access tokens
+  type: 'refresh'; // Para diferenciar de access tokens
 }
 
 @Injectable()
-export class RefreshJwtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
+export class RefreshJwtStrategy extends PassportStrategy(
+  Strategy,
+  'jwt-refresh',
+) {
   constructor(private configService: ConfigService) {
     super({
       // Extrae el token del header: Authorization: Bearer <token>

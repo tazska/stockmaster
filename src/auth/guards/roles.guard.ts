@@ -1,4 +1,9 @@
-import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Role } from '../../common/enums/role.enum';
 import { ROLES_KEY } from '../decorators/roles.decorator';
@@ -9,17 +14,17 @@ export class RolesGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean {
     // Obtener los roles requeridos por la ruta
-    const rolesRequeridos = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
-      context.getHandler(),
-      context.getClass(),
-    ]);
+    const rolesRequeridos = this.reflector.getAllAndOverride<Role[]>(
+      ROLES_KEY,
+      [context.getHandler(), context.getClass()],
+    );
 
     // Si la ruta no tiene @Roles(), cualquier usuario autenticado puede acceder
     if (!rolesRequeridos) return true;
 
     const { user } = context.switchToHttp().getRequest();
 
-    const tienePermiso = rolesRequeridos.includes(user?.rol);
+    const tienePermiso = rolesRequeridos.includes(user?.rol as Role);
     if (!tienePermiso) {
       throw new ForbiddenException(
         `Acceso denegado. Se requiere uno de estos roles: ${rolesRequeridos.join(', ')}`,

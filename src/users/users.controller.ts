@@ -37,7 +37,9 @@ export class UsersController {
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN, Role.BODEGUERO)
-  @ApiOperation({ summary: 'Listar todos los usuarios activos (ADMIN y BODEGUERO)' })
+  @ApiOperation({
+    summary: 'Listar todos los usuarios activos (ADMIN y BODEGUERO)',
+  })
   findAll() {
     return this.usersService.findAll();
   }

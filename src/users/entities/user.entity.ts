@@ -1,6 +1,9 @@
 import {
-  Entity, PrimaryGeneratedColumn, Column,
-  CreateDateColumn, UpdateDateColumn, OneToMany,
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Role } from '../../common/enums/role.enum';
 import { Exclude } from 'class-transformer';
@@ -17,7 +20,7 @@ export class User {
   nombre: string;
 
   @Column()
-  @Exclude()                    // ← nunca se serializa en respuestas
+  @Exclude() // ← nunca se serializa en respuestas
   password: string;
 
   @Column({ type: 'enum', enum: Role, default: Role.CONSULTOR })
@@ -27,7 +30,7 @@ export class User {
   isActive: boolean;
 
   @Column({ type: 'varchar', length: 500, nullable: true })
-  @Exclude()                    // ← nunca se serializa en respuestas
+  @Exclude() // ← nunca se serializa en respuestas
   refreshToken: string | null;
 
   @CreateDateColumn()

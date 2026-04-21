@@ -1,8 +1,18 @@
 import {
-  Controller, Get, Post, Param, Body, ParseIntPipe, UseGuards,
+  Controller,
+  Get,
+  Post,
+  Param,
+  Body,
+  ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import {
-  ApiTags, ApiBearerAuth, ApiOperation, ApiResponse, ApiParam,
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { CategoriaService } from './categoria.service';
@@ -22,16 +32,27 @@ export class CategoriaController {
   @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Crear una nueva categoría (solo ADMIN)' })
   @ApiResponse({ status: 201, description: 'Categoría creada exitosamente' })
-  @ApiResponse({ status: 403, description: 'No autorizado (se requiere rol ADMIN)' })
-  @ApiResponse({ status: 409, description: 'Ya existe una categoría con ese nombre' })
+  @ApiResponse({
+    status: 403,
+    description: 'No autorizado (se requiere rol ADMIN)',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Ya existe una categoría con ese nombre',
+  })
   create(@Body() createCategoriaDto: CreateCategoriaDto) {
     return this.categoriaService.create(createCategoriaDto);
   }
 
   @Get()
   @Roles(Role.ADMIN, Role.BODEGUERO, Role.CONSULTOR)
-  @ApiOperation({ summary: 'Listar todas las categorías (todos los roles autenticados)' })
-  @ApiResponse({ status: 200, description: 'Lista de categorías obtenida exitosamente' })
+  @ApiOperation({
+    summary: 'Listar todas las categorías (todos los roles autenticados)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de categorías obtenida exitosamente',
+  })
   @ApiResponse({ status: 401, description: 'No autenticado' })
   findAll() {
     return this.categoriaService.findAll();

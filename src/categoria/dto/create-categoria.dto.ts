@@ -20,6 +20,8 @@ export class CreateCategoriaDto {
   })
   @IsOptional()
   @IsString()
-  @MaxLength(255, { message: 'La descripción no puede superar los 255 caracteres' })
+  @MaxLength(255, {
+    message: 'La descripción no puede superar los 255 caracteres',
+  })
   descripcion?: string;
 }

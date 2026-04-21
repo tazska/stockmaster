@@ -22,7 +22,8 @@ export class CreateUserDto {
   @ApiProperty({
     example: 'Segura123!',
     minLength: 8,
-    description: 'Min 8 caracteres, 1 mayúscula, 1 minúscula, 1 número, 1 carácter especial (!@#$%^&*)',
+    description:
+      'Min 8 caracteres, 1 mayúscula, 1 minúscula, 1 número, 1 carácter especial (!@#$%^&*)',
   })
   @IsString({ message: 'La contraseña debe ser un texto' })
   @IsNotEmpty({ message: 'La contraseña es requerida' })
@@ -37,7 +38,8 @@ export class CreateUserDto {
     message: 'La contraseña debe contener al menos un número',
   })
   @Matches(/[!@#$%^&*]/, {
-    message: 'La contraseña debe contener al menos un carácter especial (!@#$%^&*)',
+    message:
+      'La contraseña debe contener al menos un carácter especial (!@#$%^&*)',
   })
   password: string;
 

@@ -1,4 +1,8 @@
-import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Categoria } from './entities/categoria.entity';
@@ -17,7 +21,9 @@ export class CategoriaService {
     });
 
     if (existe) {
-      throw new ConflictException(`Ya existe una categoría con el nombre "${createCategoriaDto.nombre}"`);
+      throw new ConflictException(
+        `Ya existe una categoría con el nombre "${createCategoriaDto.nombre}"`,
+      );
     }
 
     const categoria = this.categoriaRepository.create(createCategoriaDto);
