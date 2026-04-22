@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
-
+import { DatabaseModule } from '../database/database.module';
 import { AuthModule } from '../modules/providers/auth.module';
 import { CategoriaModule } from '../modules/providers/categoria.module';
 import { ProductoModule } from '../modules/providers/producto.module';
@@ -11,41 +10,14 @@ import { MovementsModule } from '../modules/providers/movements.module';
 
 @Module({
   imports: [
-    // ── Variables de entorno ─────────────────────────────────────
     ConfigModule.forRoot({
-      isGlobal: true, // disponible en todos los módulos sin reimportar
+      isGlobal: true,
       envFilePath: '.env',
     }),
-
-    // ── Rate Limiting (Throttler) ────────────────────────────────
     ThrottlerModule.forRoot({
-      throttlers: [
-        {
-          name: 'default',
-          ttl: 60000, // 60 segundos
-          limit: 100, // 100 requests por minuto (límite global)
-        },
-      ],
+      throttlers: [{ name: 'default', ttl: 60000, limit: 100 }],
     }),
-
-    // ── Base de datos MySQL con TypeORM ──────────────────────────
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        type: 'mysql',
-        host: config.get<string>('DB_HOST'),
-        port: config.get<number>('DB_PORT'),
-        username: config.get<string>('DB_USERNAME'),
-        password: config.get<string>('DB_PASSWORD'),
-        database: config.get<string>('DB_DATABASE'),
-        entities: ['dist/**/*.entity.js'],
-        synchronize: config.get('NODE_ENV') !== 'production', // ⚠️ solo desarrollo
-        logging: config.get('NODE_ENV') === 'production',
-      }),
-    }),
-
-    // ── Módulos de la aplicación ─────────────────────────────────
+    DatabaseModule,
     AuthModule,
     CategoriaModule,
     ProductoModule,

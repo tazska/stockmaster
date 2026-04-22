@@ -4,9 +4,9 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 
 export interface RefreshJwtPayload {
-  sub: number; // id del usuario
+  sub: number; 
   email: string;
-  type: 'refresh'; // Para diferenciar de access tokens
+  type: 'refresh'; 
 }
 
 @Injectable()
