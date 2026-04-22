@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../../users/users.service';
 
 export interface JwtPayload {
-  sub: number;        // id del usuario
+  sub: number; // id del usuario
   email: string;
   rol: string;
 }

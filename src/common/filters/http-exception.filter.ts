@@ -29,7 +29,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     // Si es una excepción HTTP estándar
     if (exception instanceof HttpException) {
       status = exception.getStatus();
-      const exceptionResponse = exception.getResponse();
+      const exceptionResponse = exception.getResponse() as any;
 
       // Manejo del response de validación (ValidationPipe)
       if (
@@ -37,8 +37,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
         'message' in exceptionResponse &&
         'error' in exceptionResponse
       ) {
-        message = (exceptionResponse as any).message;
-        error = (exceptionResponse as any).error || exception.name;
+        message = exceptionResponse.message || 'Error';
+        error = exceptionResponse.error || exception.name;
       } else if (typeof exceptionResponse === 'string') {
         message = exceptionResponse;
         error = exception.name;

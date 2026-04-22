@@ -16,7 +16,8 @@ export class ThrottlerExceptionFilter implements ExceptionFilter {
 
     response.status(HttpStatus.TOO_MANY_REQUESTS).json({
       statusCode: HttpStatus.TOO_MANY_REQUESTS,
-      message: 'Demasiados intentos de login. Por favor, intenta nuevamente en un minuto.',
+      message:
+        'Demasiados intentos de login. Por favor, intenta nuevamente en un minuto.',
       error: 'Too Many Requests',
       retryAfter: 60,
       timestamp: new Date().toISOString(),

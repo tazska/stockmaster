@@ -44,7 +44,7 @@ export class AuthService {
     await this.usersRepository.save(usuario);
 
     // Retornar sin la contraseña
-    const { password, ...resultado } = usuario;
+    const { password: _password, ...resultado } = usuario;
     return resultado;
   }
 
@@ -85,7 +85,9 @@ export class AuthService {
     });
 
     // Guardar refresh token en BD
-    await this.usersRepository.update(usuario.id, { refreshToken: refresh_token });
+    await this.usersRepository.update(usuario.id, {
+      refreshToken: refresh_token,
+    });
 
     return {
       access_token,
@@ -106,7 +108,7 @@ export class AuthService {
       where: { id: userId },
     });
     if (!usuario) throw new UnauthorizedException();
-    const { password, ...perfil } = usuario;
+    const { password: _password, ...perfil } = usuario;
     return perfil;
   }
 
@@ -144,7 +146,7 @@ export class AuthService {
           rol: usuario.rol,
         },
       };
-    } catch (error) {
+    } catch (_error) {
       throw new UnauthorizedException('Refresh token inválido o expirado');
     }
   }
