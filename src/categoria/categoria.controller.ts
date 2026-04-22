@@ -1,19 +1,5 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Param,
-  Body,
-  ParseIntPipe,
-  UseGuards,
-} from '@nestjs/common';
-import {
-  ApiTags,
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiParam,
-} from '@nestjs/swagger';
+import {Controller, Get, Post, Param, Body, ParseIntPipe, UseGuards,} from '@nestjs/common';
+import {ApiTags, ApiBearerAuth, ApiOperation, ApiResponse, ApiParam,} from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { CategoriaService } from './categoria.service';
 import { CreateCategoriaDto } from './dto/create-categoria.dto';
@@ -21,7 +7,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Role } from '../common/enums/role.enum';
 
-@ApiTags('Categorías')
+@ApiTags('Categories')
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller('categorias')
