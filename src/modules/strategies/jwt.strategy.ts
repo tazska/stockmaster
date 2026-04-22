@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../../modules/services/users.service';
 
 export interface JwtPayload {
-  sub: number; // id del usuario
+  sub: number; 
   email: string;
   rol: string;
 }
@@ -34,10 +34,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException('Token inválido');
     }
 
-    // Validar que el usuario existe y está activo en BD
     const user = await this.usersService.validateUserIsActive(payload.sub);
 
-    // Retornar datos del usuario que se adjuntan a request.user
     return {
       id: user.id,
       email: user.email,
