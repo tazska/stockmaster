@@ -7,6 +7,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthModule } from './auth/auth.module';
 import { CategoriaModule } from './categoria/categoria.module';
 import { ProductoModule } from './producto/producto.module';
+import { MovementsModule } from './movimiento/movements.module';
 
 @Module({
   imports: [
@@ -48,7 +49,7 @@ import { ProductoModule } from './producto/producto.module';
     AuthModule,
     CategoriaModule,
     ProductoModule,
-    // MovementsModule,
+    MovementsModule,
   ],
   providers: [
     {
