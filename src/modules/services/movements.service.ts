@@ -5,6 +5,10 @@ import { Movement, MovementType } from '../../modules/entities/movement.entity';
 import { CreateMovementDto } from '../../modules/dto/create-movement.dto';
 import { Producto } from '../../modules/entities/producto.entity';
 import { User } from '../../modules/entities/user.entity';
+<<<<<<< HEAD
+=======
+import { WebsocketGateway } from '../../websocket/websocket.gateway';
+>>>>>>> 9bc0c74 (WebSockets)
 
 @Injectable()
 export class MovementsService {
@@ -14,7 +18,13 @@ export class MovementsService {
 
     @InjectRepository(Producto)
     private readonly productRepository: Repository<Producto>,
+<<<<<<< HEAD
   ) { }
+=======
+
+    private readonly stockGateway: WebsocketGateway,
+  ) {}
+>>>>>>> 9bc0c74 (WebSockets)
 
   async create(dto: CreateMovementDto, user: User): Promise<Movement> {
     const product = await this.productRepository.findOne({
@@ -50,7 +60,9 @@ export class MovementsService {
       user,
     });
 
-    return this.movementRepository.save(movement);
+    const saved = await this.movementRepository.save(movement);
+    this.stockGateway.emitMovementCreated(saved);
+    return saved;
   }
 
   async findAll(): Promise<Movement[]> {

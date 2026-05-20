@@ -5,6 +5,10 @@ import { Producto } from '../../modules/entities/producto.entity';
 import { CreateProductoDto } from '../../modules/dto/create-producto.dto';
 import { UpdateProductoDto } from '../../modules/dto/update-producto.dto';
 import { Categoria } from '../../modules/entities/categoria.entity';
+<<<<<<< HEAD
+=======
+import { WebsocketGateway } from '../../websocket/websocket.gateway';
+>>>>>>> 9bc0c74 (WebSockets)
 
 @Injectable()
 export class ProductoService {
@@ -13,6 +17,10 @@ export class ProductoService {
     private readonly productoRepository: Repository<Producto>,
     @InjectRepository(Categoria)
     private readonly categoriaRepository: Repository<Categoria>,
+<<<<<<< HEAD
+=======
+    private readonly stockGateway: WebsocketGateway,
+>>>>>>> 9bc0c74 (WebSockets)
   ) {}
 
   async create(createProductoDto: CreateProductoDto): Promise<Producto> {
@@ -66,7 +74,6 @@ export class ProductoService {
     const producto = await this.findOne(id);
 
     if (updateProductoDto.categoriaId) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       const categoria = await this.categoriaRepository.findOne({
         where: { id: updateProductoDto.categoriaId },
       });
@@ -81,7 +88,6 @@ export class ProductoService {
     }
 
     if (updateProductoDto.nombre) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       const existe = await this.productoRepository.findOne({
         where: { nombre: updateProductoDto.nombre },
       });
@@ -94,13 +100,20 @@ export class ProductoService {
     }
 
     Object.assign(producto, updateProductoDto);
+<<<<<<< HEAD
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     return await this.productoRepository.save(producto);
+=======
+
+    const updatedProducto = await this.productoRepository.save(producto);
+    this.stockGateway.emitProductUpdated(updatedProducto);
+    return updatedProducto;
+>>>>>>> 9bc0c74 (WebSockets)
   }
 
   async remove(id: number): Promise<void> {
     const producto = await this.findOne(id);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+
     await this.productoRepository.remove(producto);
   }
 }
