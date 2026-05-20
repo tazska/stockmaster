@@ -1,14 +1,15 @@
-import {Injectable, NotFoundException, ConflictException,} from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Producto } from '../../modules/entities/producto.entity';
 import { CreateProductoDto } from '../../modules/dto/create-producto.dto';
 import { UpdateProductoDto } from '../../modules/dto/update-producto.dto';
 import { Categoria } from '../../modules/entities/categoria.entity';
-<<<<<<< HEAD
-=======
 import { WebsocketGateway } from '../../websocket/websocket.gateway';
->>>>>>> 9bc0c74 (WebSockets)
 
 @Injectable()
 export class ProductoService {
@@ -17,10 +18,7 @@ export class ProductoService {
     private readonly productoRepository: Repository<Producto>,
     @InjectRepository(Categoria)
     private readonly categoriaRepository: Repository<Categoria>,
-<<<<<<< HEAD
-=======
     private readonly stockGateway: WebsocketGateway,
->>>>>>> 9bc0c74 (WebSockets)
   ) {}
 
   async create(createProductoDto: CreateProductoDto): Promise<Producto> {
@@ -48,7 +46,9 @@ export class ProductoService {
       ...createProductoDto,
       categoria,
     });
-    return await this.productoRepository.save(producto);
+    const saved = await this.productoRepository.save(producto);
+    this.stockGateway.emitProductCreated(saved);
+    return saved;
   }
 
   async findAll(): Promise<Producto[]> {
@@ -100,20 +100,14 @@ export class ProductoService {
     }
 
     Object.assign(producto, updateProductoDto);
-<<<<<<< HEAD
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    return await this.productoRepository.save(producto);
-=======
-
-    const updatedProducto = await this.productoRepository.save(producto);
-    this.stockGateway.emitProductUpdated(updatedProducto);
-    return updatedProducto;
->>>>>>> 9bc0c74 (WebSockets)
+    const updated = await this.productoRepository.save(producto);
+    this.stockGateway.emitProductUpdated(updated);
+    return updated;
   }
 
   async remove(id: number): Promise<void> {
     const producto = await this.findOne(id);
-
     await this.productoRepository.remove(producto);
+    this.stockGateway.emitProductDeleted(id);
   }
 }

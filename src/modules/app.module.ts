@@ -7,10 +7,7 @@ import { AuthModule } from '../modules/providers/auth.module';
 import { CategoriaModule } from '../modules/providers/categoria.module';
 import { ProductoModule } from '../modules/providers/producto.module';
 import { MovementsModule } from '../modules/providers/movements.module';
-<<<<<<< HEAD
-=======
 import { WebsocketModule } from '../websocket/websocket.module';
->>>>>>> 9bc0c74 (WebSockets)
 
 @Module({
   imports: [
@@ -26,10 +23,7 @@ import { WebsocketModule } from '../websocket/websocket.module';
     CategoriaModule,
     ProductoModule,
     MovementsModule,
-<<<<<<< HEAD
-=======
     WebsocketModule,
->>>>>>> 9bc0c74 (WebSockets)
   ],
   providers: [
     {
@@ -39,3 +33,4 @@ import { WebsocketModule } from '../websocket/websocket.module';
   ],
 })
 export class AppModule {}
+

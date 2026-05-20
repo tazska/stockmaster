@@ -1,14 +1,15 @@
-import {Injectable, NotFoundException, BadRequestException,} from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Movement, MovementType } from '../../modules/entities/movement.entity';
 import { CreateMovementDto } from '../../modules/dto/create-movement.dto';
 import { Producto } from '../../modules/entities/producto.entity';
 import { User } from '../../modules/entities/user.entity';
-<<<<<<< HEAD
-=======
 import { WebsocketGateway } from '../../websocket/websocket.gateway';
->>>>>>> 9bc0c74 (WebSockets)
 
 @Injectable()
 export class MovementsService {
@@ -18,13 +19,9 @@ export class MovementsService {
 
     @InjectRepository(Producto)
     private readonly productRepository: Repository<Producto>,
-<<<<<<< HEAD
-  ) { }
-=======
 
     private readonly stockGateway: WebsocketGateway,
   ) {}
->>>>>>> 9bc0c74 (WebSockets)
 
   async create(dto: CreateMovementDto, user: User): Promise<Movement> {
     const product = await this.productRepository.findOne({
@@ -32,11 +29,11 @@ export class MovementsService {
     });
 
     if (!product) {
-      throw new NotFoundException(`Producto con ID ${dto.productId} no encontrado`);
+      throw new NotFoundException(
+        `Producto con ID ${dto.productId} no encontrado`,
+      );
     }
 
-  
-    // Validar stock en salidas
     if (dto.type === MovementType.SALIDA) {
       if (product.stockActual < dto.quantity) {
         throw new BadRequestException(
@@ -48,10 +45,12 @@ export class MovementsService {
       product.stockActual += dto.quantity;
     }
 
-    // Actualizar stock del producto
     await this.productRepository.save(product);
 
-    // Registrar movimiento
+    if (product.stockActual <= (product.stockMinimo ?? 0)) {
+      this.stockGateway.sendLowStockAlert(product);
+    }
+
     const movement = this.movementRepository.create({
       type: dto.type,
       quantity: dto.quantity,
@@ -94,3 +93,4 @@ export class MovementsService {
     return movement;
   }
 }
+

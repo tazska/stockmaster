@@ -42,29 +42,6 @@ npm run start:dev
 
 ---
 
-## Estructura del proyecto
-
-```
-src/
-├── auth/
-│   ├── decorators/  → @Roles(Role.ADMIN)
-│   ├── dto/         → login.dto.ts
-│   ├── guards/      → roles.guard.ts
-│   ├── strategies/  → jwt.strategy.ts
-│   ├── auth.controller.ts
-│   ├── auth.module.ts
-│   └── auth.service.ts
-├── users/
-│   ├── dto/         → create-user.dto.ts
-│   └── entities/    → user.entity.ts
-├── common/
-│   └── enums/       → role.enum.ts
-├── app.module.ts    ← ConfigModule + TypeORM
-└── main.ts          ← Swagger + ValidationPipe
-```
-
----
-
 ## Roles y permisos
 
 | Acción                   | ADMIN | BODEGUERO | CONSULTOR |
@@ -87,8 +64,6 @@ GET  /api/v1/auth/profile    → perfil (requiere Bearer token)
 ```
 
 En Swagger: login → copiar `access_token` → clic en 🔒 Authorize → pegar token.
-<<<<<<< HEAD
-=======
 
 ---
 
@@ -143,4 +118,3 @@ interface ConnectedUser {
   rol: 'ADMIN' | 'BODEGUERO' | 'CONSULTOR';
 }
 ```
->>>>>>> 9bc0c74 (WebSockets)
