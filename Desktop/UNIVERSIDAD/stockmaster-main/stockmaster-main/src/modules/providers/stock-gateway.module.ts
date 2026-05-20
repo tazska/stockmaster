@@ -6,3 +6,4 @@ import { StockGateway } from '../gateways/stock.gateway';
   exports: [StockGateway],
 })
 export class StockGatewayModule {}
+//borren esto pls

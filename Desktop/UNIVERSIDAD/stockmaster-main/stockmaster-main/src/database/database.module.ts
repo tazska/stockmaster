@@ -22,4 +22,4 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   ],
 })
 export class DatabaseModule {}
-//mensaje sin importancia para probar el commit
+//mensaje sin importancia para probar el commit123131
